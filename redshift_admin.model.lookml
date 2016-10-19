@@ -1,10 +1,10 @@
-- connection: mot-bi-looker-admin
-
-- include: "*.view.lookml"       # include all the views
-- include: "*.dashboard.lookml"  # include all the dashboards
-
 # preliminaries #
+
+- connection: your_connection_here # make sure this is a connection where the database user has access to pg_admin tables
+- scoping: true
 - case_sensitive: false
+- include: '*dashboard.lookml'
+- include: '*view.lookml'
 
 
 # views to explore—i.e., "base views" #
