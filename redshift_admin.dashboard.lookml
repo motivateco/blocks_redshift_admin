@@ -32,9 +32,9 @@
     show_view_names: true
     show_row_numbers: true
     width: 12
-    height: 4    
+    height: 4
     limit: 500
-    
+
   - name: recent_load_errors
     title: 'Recent Load Errors'
     type: table
@@ -47,9 +47,9 @@
     sorts: [etl_errors.error_date desc]
     show_view_names: true
     width: 12
-    height: 4    
+    height: 4
     limit: 500
-    
+
   - name: database_consumption
     title: 'Database Consumption'
     type: table
@@ -61,7 +61,7 @@
     show_view_names: true
     show_row_numbers: true
     width: 12
-    height: 4    
+    height: 4
     limit: 500
 
   - name: table_architecture
@@ -77,5 +77,5 @@
     show_view_names: true
     show_row_numbers: true
     width: 12
-    height: 4    
+    height: 4
     limit: 500
