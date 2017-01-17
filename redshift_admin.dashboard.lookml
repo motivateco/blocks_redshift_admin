@@ -1,3 +1,5 @@
+# make sure to update the model: YOUR_MODEL_NAME references below with your actual model name
+
 - dashboard: redshift_admin
   title: 'Redshift Admin'
   layout: tile
@@ -8,11 +10,15 @@
   - name: table_load_summary
     title: 'Table Load Summary'
     type: table
-    model: zz_redshift_admin
     explore: data_loads
     dimensions: [data_loads.root_bucket, data_loads.s3_path_clean, data_loads.file_stem]
     measures: [data_loads.hours_since_last_load]
     sorts: [data_loads.root_bucket]
+    model: redshift_model
+    explore: redshift_data_loads
+    dimensions: [redshift_data_loads.root_bucket, redshift_data_loads.s3_path_clean, redshift_data_loads.file_stem]
+    measures: [redshift_data_loads.hours_since_last_load]
+    sorts: [redshift_data_loads.root_bucket]
     show_view_names: true
     show_row_numbers: true
     width: 12
@@ -22,13 +28,16 @@
   - name: recent_files_loaded
     title: 'Recent Files Loaded'
     type: table
-    model: zz_redshift_admin
     explore: data_loads
     dimensions: [data_loads.file_name]
     measures: [data_loads.hours_since_last_load]
+    model: redshift_model
+    explore: redshift_data_loads
+    dimensions: [redshift_data_loads.file_name]
+    measures: [redshift_data_loads.hours_since_last_load]
     filters:
-      data_loads.load_date: 3 hours
-    sorts: [data_loads.hours_since_last_load]
+      redshift_data_loads.load_date: 3 hours
+    sorts: [redshift_data_loads.hours_since_last_load]
     show_view_names: true
     show_row_numbers: true
     width: 12
@@ -38,13 +47,16 @@
   - name: recent_load_errors
     title: 'Recent Load Errors'
     type: table
-    model: zz_redshift_admin
     explore: etl_errors
     dimensions: [etl_errors.error_date, etl_errors.file_name, etl_errors.column_name,
       etl_errors.column_data_type, etl_errors.error_reason]
+    model: redshift_model
+    explore: redshift_etl_errors
+    dimensions: [redshift_etl_errors.error_date, redshift_etl_errors.file_name, redshift_etl_errors.column_name,
+      redshift_etl_errors.column_data_type, redshift_etl_errors.error_reason]
     filters:
-      etl_errors.error_date: 7 days
-    sorts: [etl_errors.error_date desc]
+      redshift_etl_errors.error_date: 7 days
+    sorts: [redshift_etl_errors.error_date desc]
     show_view_names: true
     width: 12
     height: 4
@@ -53,11 +65,12 @@
   - name: database_consumption
     title: 'Database Consumption'
     type: table
-    model: zz_redshift_admin
     explore: db_space
+    model: redshift_model
+    explore: redshift_db_space
     dimensions: [db_space.schema, db_space.table_stem]
-    measures: [db_space.total_rows, db_space.total_megabytes, db_space.total_tables]
-    sorts: [db_space.total_megabytes desc]
+    measures: [redshift_db_space.total_rows, redshift_db_space.total_megabytes, redshift_db_space.total_tables]
+    sorts: [redshift_db_space.total_megabytes desc]
     show_view_names: true
     show_row_numbers: true
     width: 12
@@ -67,7 +80,7 @@
   - name: table_architecture
     title: 'Table Architecture (Distribution, Sort, and Skew)'
     type: table
-    model: zz_redshift_admin
+    model: redshift_model
     explore: table_skew
     dimensions: [table_skew.schema, table_skew.table, table_skew.encoded, table_skew.rows_in_table,
       table_skew.size, table_skew.sortkey, table_skew.distribution_style, table_skew.skew_rows]
