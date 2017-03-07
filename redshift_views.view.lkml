@@ -359,7 +359,6 @@ view: redshift_queries {
         wlm.total_queue_time,
         wlm.total_exec_time,
         q.elapsed, --Hmm.. this measure seems to be greater than queue_time+exec_time
-        COALESCE(qlong.querytxt,q.substring) as querytxt,
         u.usename, -- MODIFIED BY BI
         COALESCE(qlong.querytxt,q.substring)::varchar as querytxt
       FROM STL_WLM_QUERY wlm
