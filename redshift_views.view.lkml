@@ -359,11 +359,13 @@ view: redshift_queries {
         wlm.total_queue_time,
         wlm.total_exec_time,
         q.elapsed, --Hmm.. this measure seems to be greater than queue_time+exec_time
-        COALESCE(qlong.querytxt,q.substring) as querytxt
+        COALESCE(qlong.querytxt,q.substring) as querytxt,
+        u.usename -- MODIFIED BY BI
       FROM STL_WLM_QUERY wlm
       LEFT JOIN STV_WLM_SERVICE_CLASS_CONFIG sc ON sc.service_class=wlm.service_class
       LEFT JOIN SVL_QLOG q on q.query=wlm.query
       LEFT JOIN STL_QUERY qlong on qlong.query=q.query
+      LEFT JOIN (select convert(varchar, usename) as usename, usesysid from pg_user_info) u on q.userid = u.usesysid
       WHERE wlm.service_class_start_time >= dateadd(day,-1,GETDATE())
       AND wlm.service_class_start_time <= GETDATE()
       --WHERE wlm.query>=(SELECT MAX(query)-5000 FROM STL_WLM_QUERY)
@@ -373,6 +375,13 @@ view: redshift_queries {
     distribution: "query"
     sortkeys: ["query"]
   }
+
+  # MODIFIED by BI
+  dimension: user_name {
+    type: string
+    sql: ${TABLE}.usename ;;
+  }
+
   dimension: query {
     type: number
     sql: ${TABLE}.query ;;
