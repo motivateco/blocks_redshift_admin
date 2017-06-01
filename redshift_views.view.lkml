@@ -359,12 +359,8 @@ view: redshift_queries {
         wlm.total_queue_time,
         wlm.total_exec_time,
         q.elapsed, --Hmm.. this measure seems to be greater than queue_time+exec_time
-<<<<<<< HEAD
-        COALESCE(qlong.querytxt,q.substring) as querytxt,
-        u.usename -- MODIFIED BY BI
-=======
+        u.usename, -- MODIFIED BY BI
         COALESCE(qlong.querytxt,q.substring)::varchar as querytxt
->>>>>>> 3c6c4111d2fa98b29c7b26435a01db47f6265ba2
       FROM STL_WLM_QUERY wlm
       LEFT JOIN STV_WLM_SERVICE_CLASS_CONFIG sc ON sc.service_class=wlm.service_class -- Remove this line if access was not granted
       LEFT JOIN SVL_QLOG q on q.query=wlm.query
