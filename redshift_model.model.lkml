@@ -1,13 +1,8 @@
 # # https://github.com/llooker/blocks_redshift_admin
-# #
-<<<<<<< HEAD
+
 # # Make sure this is a connection where the database user has access to pg_admin tables
 connection: "mot-bi-looker-admin"
-=======
-# # Make sure this is a connection where the database user has sufficient permissions (per above link)
 
-connection: "YOUR_CONNECTION_HERE"
->>>>>>> 2c688c20403c97cbbd467d28cd844a3bf2488fb3
 case_sensitive: no
 
 include: "redshift_*.dashboard"
