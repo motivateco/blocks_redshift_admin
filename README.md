@@ -22,6 +22,7 @@
 The model is very self contained, with no references to other views/models, and all global object names prefixed with "redshift_". As a result, implementation should be straight-forward:
 
 - Copy the view and dashboard files into your project
+	- If your scratch schema is not called `looker_scratch`, search for `looker_scratch` within the view file and replace it with the name of your scratch schema 
 - Copy the model file into your project and set the connection
 <<<<<<< HEAD
   - The connection and its associated user in Redshift have an impact on the results of reports. Some of the admin views are only available to superusers, and all of the views return information specific to the user if not a super user. So choose your connection based on your needs for the block:
@@ -54,6 +55,7 @@ Identify hotspots from the performance dashboard, and drill into the query inspe
 			- [SVV_TABLE_INFO](http://docs.aws.amazon.com/redshift/latest/dg/r_SVV_TABLE_INFO.html)
 			- [STV_TBL_PERM](http://docs.aws.amazon.com/redshift/latest/dg/r_STV_TBL_PERM.html)
 			- [STV_BLOCKLIST](http://docs.aws.amazon.com/redshift/latest/dg/r_STV_BLOCKLIST.html)
+			- [STL_LOAD_COMMITS](http://docs.aws.amazon.com/redshift/latest/dg/r_STL_LOAD_COMMITS.html)
 	- With a separate superuser connection
 		- This will allow you to view all activity on Redshift across users
 		- Note that when creating a superuser connection, Looker users with (develop or sql_runner permissions AND with access to the model) or with manage_models would be able to run arbitrary queries through the super-user connection.
