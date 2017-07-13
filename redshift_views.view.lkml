@@ -352,18 +352,20 @@ view: redshift_queries {
     sql_trigger_value: SELECT FLOOR((EXTRACT(epoch from GETDATE()) - 60*60*22)/(60*60*24)) ;; #22h
     sql: SELECT
         wlm.query,
-        q.substring,
-        --wlm.service_class,
+        q.substring::varchar,
         sc.name as service_class,
+        --wlm.service_class as service_class --Use if connection was not given access to STV_WLM_SERVICE_CLASS_CONFIG
         wlm.service_class_start_time as start_time,
         wlm.total_queue_time,
         wlm.total_exec_time,
         q.elapsed, --Hmm.. this measure seems to be greater than queue_time+exec_time
-        COALESCE(qlong.querytxt,q.substring) as querytxt
+        u.usename, -- MODIFIED BY BI
+        COALESCE(qlong.querytxt,q.substring)::varchar as querytxt
       FROM STL_WLM_QUERY wlm
-      LEFT JOIN STV_WLM_SERVICE_CLASS_CONFIG sc ON sc.service_class=wlm.service_class
+      LEFT JOIN STV_WLM_SERVICE_CLASS_CONFIG sc ON sc.service_class=wlm.service_class -- Remove this line if access was not granted
       LEFT JOIN SVL_QLOG q on q.query=wlm.query
       LEFT JOIN STL_QUERY qlong on qlong.query=q.query
+      LEFT JOIN (select convert(varchar, usename) as usename, usesysid from pg_user_info) u on q.userid = u.usesysid
       WHERE wlm.service_class_start_time >= dateadd(day,-1,GETDATE())
       AND wlm.service_class_start_time <= GETDATE()
       --WHERE wlm.query>=(SELECT MAX(query)-5000 FROM STL_WLM_QUERY)
@@ -373,6 +375,13 @@ view: redshift_queries {
     distribution: "query"
     sortkeys: ["query"]
   }
+
+  # MODIFIED by BI
+  dimension: user_name {
+    type: string
+    sql: ${TABLE}.usename ;;
+  }
+
   dimension: query {
     type: number
     sql: ${TABLE}.query ;;
@@ -726,12 +735,12 @@ view: redshift_query_execution {
         SELECT
           query ||'.'|| seg || '.' || step as id,
           query, seg, step,
-          label,
-          regexp_substr(label, '^[A-Za-z]+') as operation,
+          label::varchar,
+          regexp_substr(label, '^[A-Za-z]+')::varchar as operation,
           CASE WHEN label ilike 'scan%name=%' AND label not ilike '%Internal Worktable'
               THEN substring(regexp_substr(label, 'name=(.+)$'),6)
               ELSE NULL
-          END as "table",
+          END::varchar as "table",
           CASE WHEN label ilike 'scan%tbl=%'
               THEN ('0'+COALESCE(substring(regexp_substr(label, 'tbl=([0-9]+)'),5),''))::int
               ELSE NULL
@@ -742,7 +751,7 @@ view: redshift_query_execution {
                          ELSE 'id:'||COALESCE(substring(regexp_substr(label, 'tbl=([0-9]+)'),5),'')
                          END
                ELSE NULL
-               END
+               END::varchar
           as "table_join_key",
           MAX(is_diskbased) as is_diskbased,
           MAX(is_rrscan) as is_rrscan,

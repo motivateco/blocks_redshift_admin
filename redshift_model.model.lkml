@@ -1,7 +1,8 @@
 # # https://github.com/llooker/blocks_redshift_admin
-# #
+
 # # Make sure this is a connection where the database user has access to pg_admin tables
 connection: "mot-bi-looker-admin"
+
 case_sensitive: no
 
 include: "redshift_*.dashboard"
@@ -12,12 +13,11 @@ explore: redshift_data_loads {
 }
 
 explore: redshift_db_space {
-  label: "DB Space"
+  hidden: yes
 }
 
 explore: redshift_etl_errors {
-   hidden: yes
-  label: "ETL Errors"
+  hidden: yes
 }
 
 explore: redshift_tables {
