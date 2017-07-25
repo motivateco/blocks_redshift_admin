@@ -113,7 +113,7 @@ explore: redshift_queries {
 
 explore: redshift_queries_non_persisted {
   # hidden: yes
-  persist_for: "0 seconds"
+  persist_for: "1 hour"
 }
 
 explore: redshift_slices {
