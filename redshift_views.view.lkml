@@ -346,10 +346,18 @@ view: redshift_plan_steps {
 }
 
 view: redshift_queries {
+  extends: [redshift_queries_non_persisted]
+  derived_table: {
+    sql_trigger_value: SELECT FLOOR((EXTRACT(epoch from GETDATE()) - 60*60*22)/(60*60*24)) ;; #22h
+  }
+}
+
+view: redshift_queries_non_persisted {
   # Recent is last 24 hours of queries
   # (we only see queries related to our rs user_id)
   derived_table: {
-    sql_trigger_value: SELECT FLOOR((EXTRACT(epoch from GETDATE()) - 60*60*22)/(60*60*24)) ;; #22h
+# MODIFIED by BI
+#     sql_trigger_value: SELECT FLOOR((EXTRACT(epoch from GETDATE()) - 60*60*22)/(60*60*24)) ;; #22h
     sql: SELECT
         wlm.query,
         q.substring::varchar,
@@ -395,6 +403,11 @@ view: redshift_queries {
     type: time
     timeframes: [raw, minute15, hour, day_of_week, date]
     sql: ${TABLE}.start_time ;;
+  }
+  dimension_group: start_est {
+    type: time
+    timeframes: [raw, minute15, hour, day_of_week, date]
+    sql: convert_timezone('UTC', 'EST', ${TABLE}.start_time) ;;
   }
   dimension: service_class {
     type: string

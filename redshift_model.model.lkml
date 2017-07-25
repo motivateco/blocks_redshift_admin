@@ -111,6 +111,11 @@ explore: redshift_queries {
   persist_for: "0 seconds"
 }
 
+explore: redshift_queries_non_persisted {
+  # hidden: yes
+  persist_for: "0 seconds"
+}
+
 explore: redshift_slices {
   # hidden: yes
   persist_for: "0 seconds"
