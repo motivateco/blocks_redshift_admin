@@ -483,26 +483,31 @@ view: redshift_queries_non_persisted {
   }
   measure: count_of_queued {
     type: sum
+    drill_fields: [query, start_date, time_executing, substring]
     sql: ${was_queued}::int ;;
   }
   measure: percent_queued {
     type: number
     value_format: "0.## \%"
+    drill_fields: [query, start_date, time_executing, substring]
     sql: 100 * ${count_of_queued} / ${count}  ;;
   }
   measure: total_time_in_queue {
     type: sum
     description: "Sum of time that queries were queued before running, in seconds"
+    drill_fields: [query, start_date, time_executing, substring]
     sql: ${time_in_queue};;
   }
   measure: total_time_executing {
     type: sum
     description: "Sum of time that queries were executing, in seconds"
+    drill_fields: [query, start_date, time_executing, substring]
     sql: ${time_executing};;
   }
   measure: total_time_overall {
     type: sum
     description: "Sum of time that queries took (both queued and executing), in seconds"
+    drill_fields: [query, start_date, time_executing, substring]
     sql: ${time_in_queue} + ${time_executing}  ;;
   }
   #   measure: total_time_elapsed {
@@ -513,6 +518,7 @@ view: redshift_queries_non_persisted {
   measure: time_executing_per_query {
     type: number
     sql: CASE WHEN ${count}<>0 THEN ${total_time_executing} / ${count} ELSE NULL END ;;
+    drill_fields: [query, start_date, time_executing, substring]
     value_format_name: decimal_1
   }
 }
